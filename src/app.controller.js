@@ -16,15 +16,13 @@ const bootstrap = () => {
     app.use(express.json());
 
     app.get('/', (req, res, next) => {
-        res.json({ message: 'Hello on NoteApp .....' });
+        res.json({ message: 'Hello on Saraha App .....' });
     });
 
     testDBConnection();
 
     app.use('/users', userRouter);
     app.use('/messages', messageRouter);
-
-
 
     app.use('{/*demo}', (req, res, next) => {
         throw new Error(`URL "${req.originalUrl}" NOT FOUND`)

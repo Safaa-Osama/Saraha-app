@@ -17,6 +17,6 @@ export const deleteOne = async ({ model, filter = {} } = {}) => {
     return await model.deleteOne(filter);
 }
 
-export const findAll = async (model) => {
-    return await model.find();
+export const findAll = async (model, fields) => {
+    return await model.find().select(fields);
 }

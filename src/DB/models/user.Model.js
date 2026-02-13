@@ -4,15 +4,15 @@ import { genderEnum, providerEnum } from "../../common/enum/user.enum.js";
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        minLength: 3,
-        maxLength: 10,
+        minLength: [3, "name must be at least 3 char"],
+        maxLength: [10, "name must be not more than 10 char"],
         required: true,
         trim: true
     },
     lastName: {
         type: String,
-        minLength: 3,
-        maxLength: 10,
+       minLength: [3, "name must be at least 3 char"],
+        maxLength: [10, "name must be not more than 10 char"],
         required: true,
         trim: true
     },
@@ -52,9 +52,9 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
     strictQuery: true,
     strict: true,
-    toJSON: { virtuals: true },
-    toObject: true
-
+    toJSON: { virtuals: true },   
+    toObject: { virtuals: true }
+  
 });
 
 userSchema.virtual("userName")
