@@ -29,7 +29,7 @@ const bootstrap = () => {
     });
 
     app.use((err, req, res, next) => {
-        res.status(err.cause || 500).json({
+        return res.status(err.cause || 500).json({
             message: err.message,
             stack: err.stack
         });

@@ -34,7 +34,6 @@ export const signUp = async (req, res, next) => {
         }
     });
     succesRresponse({ res, status: 201, data: user });
-
 }
 
 export const signIn = async (req, res, next) => {
@@ -74,7 +73,7 @@ export const getAllUsers = async (req, res, next) => {
 
 export const getProfile = async (req, res, next) => {
   
-    succesRresponse({ res, data: { ...req.user, phone: decrypt(user.phone) } })
+    succesRresponse({ res, data: { ...req.user._doc, phone: decrypt(req.user.phone) } })
 }
 
 

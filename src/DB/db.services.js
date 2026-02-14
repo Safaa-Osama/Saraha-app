@@ -20,3 +20,7 @@ export const deleteOne = async ({ model, filter = {} } = {}) => {
 export const findAll = async (model, fields) => {
     return await model.find().select(fields);
 }
+
+export const findOneSelect = async ({ model,fields , filter = {} } = {}) => {
+    return await model.findOne(filter).select(fields);
+}

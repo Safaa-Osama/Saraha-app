@@ -9,7 +9,7 @@ userRouter.post('/sign-up', UR.signUp);
 userRouter.post('/sign-in', UR.signIn);
 
 userRouter.get("/", UR.getAllUsers);
-userRouter.get("/profile", authontication,UR.getProfile);
+userRouter.get("/profile", authontication, UR.getProfile);
 
 
 
