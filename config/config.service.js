@@ -1,14 +1,25 @@
-import dotenv from "dotenv";
+import { config } from "dotenv";
+import { resolve } from "node:path";
 
-dotenv.config({ path: './config/.env' });
+ let envPath = {
+    development: resolve("config/.env.development"),
+    production: resolve("config/.env.production")
+}
+config({
+    path: envPath[process.env.NODE_ENV]
+});
 
-
-let port = process.env.PORT;
-let privateKey = process.env.PRIVATEKEY;
-let DB_url = process.env.DB_URL
+let PORT = process.env.PORT;
+let PRIVATE_KEY = process.env.PRIVATE_KEY;
+let DB_URI = process.env.DB_URI;
+let CLIENT_ID = process.env.CLIENT_ID
+let SALT_ROUND = process.env.SALT_ROUND
 
 export {
-    port,
-    privateKey,
-    DB_url
+    PORT,
+    PRIVATE_KEY,
+    DB_URI,
+    envPath,
+    CLIENT_ID,
+    SALT_ROUND
 };

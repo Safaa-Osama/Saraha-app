@@ -1,4 +1,4 @@
-import { privateKey } from "../../../config/config.service.js";
+import { PRIVATE_KEY } from "../../../config/config.service.js";
 import { verifyToken } from "../utilis/token.service.js";
 import * as db_services from "../../DB/db.services.js"
 import userModel from "../../DB/models/user.Model.js";
@@ -8,16 +8,16 @@ export const authontication = async (req, res, next) => {
     const { authorization } = req.headers;
 
     if (!authorization) {
-        throw new Error("token required");
+        throw new Error("invalid authorization");
     }
 
     const decoded = verifyToken({
         token: authorization.split(" ")[1],
-        secretKey: privateKey
+        secretKey: PRIVATE_KEY
     })
 
     if (!decoded) {
-        throw new Error("invalid token")
+        throw new Error("invalid authorization !")
     }
 
     const user = await db_services.findOneSelect({

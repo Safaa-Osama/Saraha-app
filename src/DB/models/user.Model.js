@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { genderEnum, providerEnum } from "../../common/enum/user.enum.js";
+import { genderEnum, providerEnum, roleEnum } from "../../common/enum/user.enum.js";
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     },
     lastName: {
         type: String,
-       minLength: [3, "name must be at least 3 char"],
+        minLength: [3, "name must be at least 3 char"],
         maxLength: [10, "name must be not more than 10 char"],
         required: true,
         trim: true
@@ -22,20 +22,25 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    confirmedEmail:Boolean,
     password: {
         type: String,
         minLength: 6,
-        required: true,
+        required: function () {
+            return this.provider == providerEnum.system ? true : false
+        },
         trim: true
     },
     phone: {
         type: String,
-        required: true,
+        required: function () {
+            return this.provider == providerEnum.system ? true : false
+        },
         trim: true
     },
     age: {
         type: Number,
-        min: 18,
+        min: 20,
         max: 60
     },
     provider: {
@@ -47,21 +52,27 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: Object.values(genderEnum),
         default: genderEnum.male
-    }
+    },
+    role: {
+        type: String,
+        enum: Object.values(roleEnum),
+        default: roleEnum.user
+    },
+    profilePicture:String
 }, {
     timestamps: true,
     strictQuery: true,
     strict: true,
-    toJSON: { virtuals: true },   
+    toJSON: { virtuals: true },
     toObject: { virtuals: true }
-  
+
 });
 
 userSchema.virtual("userName")
     .get(function () {
         return this.firstName + " " + this.lastName
     }).set(function (value) {
-        const { firstName, lastName } = value.split(" ")
+        const [firstName, lastName]  = value.split(" ")
         this.set({ firstName, lastName })
     })
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);
