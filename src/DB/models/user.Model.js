@@ -58,7 +58,12 @@ const userSchema = new mongoose.Schema({
         enum: Object.values(roleEnum),
         default: roleEnum.user
     },
-    profilePicture:String
+    profilePicture:String,
+    
+        profileVisits:{
+            type:Number,
+            default:0
+    }
 }, {
     timestamps: true,
     strictQuery: true,

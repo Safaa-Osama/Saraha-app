@@ -83,7 +83,7 @@ export const signUpWithGoogle = async (req, res, next) => {
 export const signIn = async (req, res, next) => {
     const { email, password } = req.body;
 
-    const user = await db_services.findOne({
+    let user = await db_services.findOne({
         model: userModel,
         filter: { email, provider: providerEnum.system }
     })
@@ -95,12 +95,19 @@ export const signIn = async (req, res, next) => {
         throw new Error("invalid password", { cause: 400 })
     }
 
+      user = await db_services.updateOne({
+        model:userModel,
+        filter: { _id: user._id },
+        options:
+            { $inc: { profileViews: 1 } },
+        
+    })
+
 
     let accessToken = generateToken({
         payload: {
             id: user._id,
             email: user.email,
-            password: user.password,
         },
         secretKey: PRIVATE_KEY,
         option: { expiresIn: '1h' }
