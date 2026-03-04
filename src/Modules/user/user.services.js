@@ -7,8 +7,9 @@ import { compare, hash } from "../../common/utilis/security/hash.security.js";
 import { generateToken } from "../../common/utilis/token.service.js";
 import { OAuth2Client } from 'google-auth-library';
 import { CLIENT_ID, PRIVATE_KEY } from "../../../config/config.service.js";
+import cloudinary from "../../common/utilis/cloudinary/cloudinary.js";
 
-
+//profile picture
 export const signUp1 = async (req, res, next) => {
     const { userName, email, password, cpassword, age, gender, phone } = req.body;
 
@@ -24,23 +25,29 @@ export const signUp1 = async (req, res, next) => {
         throw new Error("Email already exist", { cause: 409 })
     }
 
-    if (!req.files.length) {
+    if (!req.file) {
         throw new Error("wrong attachments")
     }
 
+    const { secure_url, public_id } = await cloudinary.uploader.upload(req.file.path, {
+        use_filename: true,
+        unique_filename: false
+    })
     const user = await db_services.create({
         model: userModel,
         data: {
             userName, email, age, gender,
             password: hash({ text: password, salt_round: 10 }),
             phone: encrypt(phone),
-            profilePicture: req.file.path
+            profilePicture: { secure_url, public_id }
 
         }
     });
-    succesRresponse({ res, status: 201, data: user });
+
+    succesRresponse({ res, status: 201, data:user });
 }
 
+//cover pictures
 export const signUp2 = async (req, res, next) => {
     const { userName, email, password, cpassword, age, gender, phone } = req.body;
 
@@ -101,7 +108,6 @@ export const signUp3 = async (req, res, next) => {
     for (const file of req.files.attachments) {
         paths.push(file.path)
     }
-    console.log(paths)
 
     const user = await db_services.create({
         model: userModel,
@@ -109,7 +115,7 @@ export const signUp3 = async (req, res, next) => {
             userName, email, age, gender,
             password: hash({ text: password, salt_round: 10 }),
             phone: encrypt(phone),
-            profilePicture: req.file.attachment.path[0],
+            profilePicture: req.files.attachment[0].path,
             coverPictures: paths
 
         }

@@ -3,7 +3,7 @@ import * as US from "./user.services.js"
 import { authontication } from "../../common/middleware/authontication.js";
 import { joiValidator } from "../../common/middleware/joi.validator.js";
 import * as UV from "./user.schema.js";
-import { multer_local } from "../../common/middleware/multer.js";
+import { multer_cloud, multer_local } from "../../common/middleware/multer.js";
 import { multerEnum } from "../../common/enum/multer.enum.js";
 
 
@@ -11,10 +11,12 @@ export const userRouter = Router();
 
 userRouter.get("/", US.getAllUsers);
 
-//single
-userRouter.post('/sign-up1', multer_local({ customPath: "useers", customType: multerEnum.image }).single("attachment"), US.signUp1);
+//single + cloudinary
+userRouter.post('/sign-up1', multer_cloud(multerEnum.image).single("attachment"), US.signUp1);
+
 //array
 userRouter.post('/sign-up2', multer_local({ customPath: "useers", customType: multerEnum.image }).array("attachments", 3), US.signUp2);
+
 //fields
 userRouter.post('/sign-up3', multer_local({ customPath: "useers", customType: multerEnum.image })
     .fields([

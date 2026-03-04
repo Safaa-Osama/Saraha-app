@@ -28,3 +28,18 @@ export const multer_local = ({ customPath = "General", customType = [] }) => {
   const upload = multer({ storage, fileFilter })
   return upload;
 }
+
+export const multer_cloud = (customType = [] ) => {
+
+  const storage = multer.diskStorage({})
+
+  function fileFilter(req, file, cb) {
+    if (!customType.includes(file.mimetype)) {
+      cb(new Error("Invalid Image Type"))
+    }
+    cb(null, true)
+  }
+
+  const upload = multer({ storage, fileFilter })
+  return upload;
+}

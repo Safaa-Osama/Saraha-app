@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { genderEnum, providerEnum, roleEnum } from "../../common/enum/user.enum.js";
 
+
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -22,7 +23,7 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
-    confirmedEmail:Boolean,
+    confirmedEmail: Boolean,
     password: {
         type: String,
         minLength: 6,
@@ -58,13 +59,18 @@ const userSchema = new mongoose.Schema({
         enum: Object.values(roleEnum),
         default: roleEnum.user
     },
-    profilePicture:String,
-    coverPictures:[String],
+    profilePicture: {
+        secure_url: { type: String, required: true },
+        public_id: { type: String, required: true }
+    },
+    coverPictures: [{
+        secure_url: { type: String, required: true },
+        public_id: { type: String, required: true }
+    }],
 
-    
-        profileVisits:{
-            type:Number,
-            default:0
+    profileVisits: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true,
@@ -79,7 +85,7 @@ userSchema.virtual("userName")
     .get(function () {
         return this.firstName + " " + this.lastName
     }).set(function (value) {
-        const [firstName, lastName]  = value.split(" ")
+        const [firstName, lastName] = value.split(" ")
         this.set({ firstName, lastName })
     })
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);
