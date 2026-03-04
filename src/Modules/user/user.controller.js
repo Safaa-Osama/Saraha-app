@@ -11,11 +11,20 @@ export const userRouter = Router();
 
 userRouter.get("/", US.getAllUsers);
 
+//single
+userRouter.post('/sign-up1', multer_local({ customPath: "useers", customType: multerEnum.image }).single("attachment"), US.signUp1);
+//array
+userRouter.post('/sign-up2', multer_local({ customPath: "useers", customType: multerEnum.image }).array("attachments", 3), US.signUp2);
+//fields
+userRouter.post('/sign-up3', multer_local({ customPath: "useers", customType: multerEnum.image })
+    .fields([
+        { name: "attachments", maxCount: 3 },
+        { name: "attachment", maxCount: 1 }
+    ]), US.signUp3);
 
-userRouter.post('/sign-up', multer_local("useers", multerEnum.image).single("attachment"), US.signUp);
 userRouter.post('/signup/gmail', US.signUpWithGoogle);
 
-userRouter.post('/sign-in', joiValidator(UV.signInSchema),US.signIn);
+userRouter.post('/sign-in', joiValidator(UV.signInSchema), US.signIn);
 
 userRouter.get("/profile", authontication, US.getProfile);
 

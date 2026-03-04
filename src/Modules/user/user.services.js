@@ -9,7 +9,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { CLIENT_ID, PRIVATE_KEY } from "../../../config/config.service.js";
 
 
-export const signUp = async (req, res, next) => {
+export const signUp1 = async (req, res, next) => {
     const { userName, email, password, cpassword, age, gender, phone } = req.body;
 
     if (password !== cpassword) {
@@ -24,16 +24,99 @@ export const signUp = async (req, res, next) => {
         throw new Error("Email already exist", { cause: 409 })
     }
 
+    if (!req.files.length) {
+        throw new Error("wrong attachments")
+    }
+
     const user = await db_services.create({
         model: userModel,
         data: {
             userName, email, age, gender,
-            password: hash({ text: password , salt_round:10}),
-            phone: encrypt(phone)
+            password: hash({ text: password, salt_round: 10 }),
+            phone: encrypt(phone),
+            profilePicture: req.file.path
+
         }
     });
     succesRresponse({ res, status: 201, data: user });
 }
+
+export const signUp2 = async (req, res, next) => {
+    const { userName, email, password, cpassword, age, gender, phone } = req.body;
+
+    if (password !== cpassword) {
+        throw new Error("invalid password", { cause: 400 })
+    }
+
+    if (await db_services.findOne({
+        model: userModel,
+        filter: { email }
+    })
+    ) {
+        throw new Error("Email already exist", { cause: 409 })
+    }
+
+    if (!req.files.length > 0) {
+        throw new Error("wrong attachments")
+    }
+
+    let paths = []
+    for (const file of req.files) {
+        paths.push(file.path)
+    }
+
+    const user = await db_services.create({
+        model: userModel,
+        data: {
+            userName, email, age, gender,
+            password: hash({ text: password, salt_round: 10 }),
+            phone: encrypt(phone),
+            coverPictures: paths
+
+        }
+    });
+    succesRresponse({ res, status: 201, data: user });
+}
+
+export const signUp3 = async (req, res, next) => {
+    const { userName, email, password, cpassword, age, gender, phone } = req.body;
+
+    if (password !== cpassword) {
+        throw new Error("invalid password", { cause: 400 })
+    }
+
+    if (await db_services.findOne({
+        model: userModel,
+        filter: { email }
+    })
+    ) {
+        throw new Error("Email already exist", { cause: 409 })
+    }
+
+    if (!req.files) {
+        throw new Error("wrong attachments")
+    }
+
+    let paths = []
+    for (const file of req.files.attachments) {
+        paths.push(file.path)
+    }
+    console.log(paths)
+
+    const user = await db_services.create({
+        model: userModel,
+        data: {
+            userName, email, age, gender,
+            password: hash({ text: password, salt_round: 10 }),
+            phone: encrypt(phone),
+            profilePicture: req.file.attachment.path[0],
+            coverPictures: paths
+
+        }
+    });
+    succesRresponse({ res, status: 201, data: user });
+}
+
 
 export const signUpWithGoogle = async (req, res, next) => {
     const { idToken } = req.body;
@@ -95,12 +178,12 @@ export const signIn = async (req, res, next) => {
         throw new Error("invalid password", { cause: 400 })
     }
 
-      user = await db_services.updateOne({
-        model:userModel,
+    user = await db_services.updateOne({
+        model: userModel,
         filter: { _id: user._id },
         options:
             { $inc: { profileViews: 1 } },
-        
+
     })
 
 

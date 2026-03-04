@@ -20,6 +20,8 @@ const bootstrap = () => {
 
     testDBConnection();
 
+    app.use("/uploads", express.static("uploads"))
+
     app.use('/users', userRouter);
     app.use('/messages', messageRouter);
 
@@ -31,7 +33,7 @@ const bootstrap = () => {
         return res.status(err.cause || 500).json({
             message: err.message,
             srack: err.stack
-      //      stack: envPath == development? err.stack : null
+            //      stack: envPath == development? err.stack : null
         });
     });
 

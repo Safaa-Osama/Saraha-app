@@ -59,6 +59,8 @@ const userSchema = new mongoose.Schema({
         default: roleEnum.user
     },
     profilePicture:String,
+    coverPictures:[String],
+
     
         profileVisits:{
             type:Number,

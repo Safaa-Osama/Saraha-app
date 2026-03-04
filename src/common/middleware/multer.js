@@ -19,7 +19,6 @@ export const multer_local = ({ customPath = "General", customType = [] }) => {
   })
 
   function fileFilter(req, file, cb) {
-
     if (!customType.includes(file.mimetype)) {
       cb(new Error("Invalid Image Type"))
     }
