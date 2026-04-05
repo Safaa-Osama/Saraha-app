@@ -33,7 +33,7 @@ const bootstrap = async () => {
         legacyHeaders: false,
     })
     app.use(
-        cors(corsOption),
+        cors(),
         helmet(),
         limiter,
         express.json()
